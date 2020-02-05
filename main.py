@@ -106,16 +106,17 @@ class UDPServer(multiprocessing.Process):
                 else:
                     transaction = serialization_pb2.Transaction()
                     transaction.ParseFromString(data)
-                    print(transaction)
-                    txhash = int(transaction.txHash, 16)
-                    print(txhash)
-                    if txhash in self.txHashlist.keys():
-                        workersQueue[self.txHashlist[txhash]].put(transaction)
+                    #print(transaction)
+                    print(transaction.txhash)
+                    if transaction.txhash in self.txHashlist.keys():
+                        workersQueue[self.txHashlist[transaction.txhash]].put(transaction)
                     else:
                         timestamps = transaction.timestamp
                         timestamps[sorted_nodekeys.index(PUBLIC_KEY.serialize().hex())] = self.vectorClock
+                        txhash = int(transaction.txHash, 16)
                         workerid = (txhash % (cpucores - 3))
-                        self.txHashlist[txhash] = workerid
+                        print("Assigned to {}".format(workerid))
+                        self.txHashlist[transaction.txhash] = workerid
                         workersQueue[workerid].put(transaction)
                         self.vectorClock = self.vectorClock + 1
             except Exception as e:
