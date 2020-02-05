@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package Pebble;
+
+message Transaction {
+   string txHash = 1;
+   bool commitment = 9;
+   string PrimaryNodekey = 2;
+   int32 NodeListSeed = 3;
+   string MultiSignature = 4;
+   repeated int32 timestamp = 5;
+   string UserPublicKey = 6;
+   string RecipientPublickey = 7;
+   bytes payload = 8;
+  }
+
+message incominghandshake {
+   string sendingpublickey = 1;
+   string nodeip = 2;
+}
+
+message outgoinghandshake {
+   repeated string publickey = 1;
+   repeated string nodeip = 2;
+}
