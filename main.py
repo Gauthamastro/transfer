@@ -106,7 +106,6 @@ class UDPServer(multiprocessing.Process):
                 try:
                     transaction = serialization_pb2.Transaction()
                     transaction.ParseFromString(data)
-                    print(transaction)
                 except Exception as e:
                     print("--Not transaction data ")
                     print(e)
