@@ -112,15 +112,15 @@ class UDPServer(multiprocessing.Process):
                 except Exception as e:
                     print("--Not transaction data ")
                     print(e)
-                if transaction.txhash in self.txHashlist.keys():
-                    workersQueue[self.txHashlist[transaction.txhash]].put(transaction)
+                if transaction.txHash in self.txHashlist.keys():
+                    workersQueue[self.txHashlist[transaction.txHash]].put(transaction)
                 else:
                     timestamps = transaction.timestamp
                     timestamps[sorted_nodekeys.index(PUBLIC_KEY.serialize().hex())] = self.vectorClock
                     txhash = int(transaction.txHash, 16)
                     workerid = (txhash % (cpucores - 3))
                     print("Assigned to {}".format(workerid))
-                    self.txHashlist[transaction.txhash] = workerid
+                    self.txHashlist[transaction.txHash] = workerid
                     workersQueue[workerid].put(transaction)
                     self.vectorClock = self.vectorClock + 1
 
