@@ -157,14 +157,15 @@ class workerthread(multiprocessing.Process):  # This is where the processing hap
                     print(i)
 
     def run(self):
-        while workersQueue[self.workerID].qsize()>0:
-            self.transaction = workersQueue[self.workerID].get()
-            print("-- LOG: {} from worker-{}".format(self.transaction.txHash, self.workerID))
-            #self.cursor.execute( """SELECT txHash FROM worker{} ORDER BY vectorClock DESC LIMIT 1;""".format(str(self.workerID)))
-            #self.result = self.cursor.fetchall()
-            #self.prevtxHash = self.result[0][0]
-            #self.transaction.txHash = utils.txhash_generator(self.prevtxHash.encode('utf-8'),self.transaction.txHash)
-            print(self.transaction.txHash)
+        while True:
+            while not workersQueue[self.workerID].empty():
+                self.transaction = workersQueue[self.workerID].get()
+                print("-- LOG: {} from worker-{}".format(self.transaction.txHash, self.workerID))
+                # self.cursor.execute( """SELECT txHash FROM worker{} ORDER BY vectorClock DESC LIMIT 1;""".format(str(self.workerID)))
+                # self.result = self.cursor.fetchall()
+                # self.prevtxHash = self.result[0][0]
+                # self.transaction.txHash = utils.txhash_generator(self.prevtxHash.encode('utf-8'),self.transaction.txHash)
+                print(self.transaction.txHash)
 
     def __exit__(self):
         print("Destroying worker {} ".format(self.workerID))
