@@ -96,34 +96,33 @@ class UDPServer(multiprocessing.Process):
         self.serversockin.bind(('0.0.0.0', PORT))
         while True:
             data, addr = self.serversockin.recvfrom(1024)
-            try:
-                if self.vectorClock % 10 == 0 and self.vectorClock != 0:
-                    print("Created a commitment transaction.")
-                    """
-                    Create a commitment tx in all the queues. worker threads create the merkle root of last 10 transactions processed by the this node and send to other nodes.
-                    """
-                    self.vectorClock = self.vectorClock + 1  # Do commitment tx
-                else:
-                    print("DATA is ")
-                    #print(data)
+            if self.vectorClock % 10 == 0 and self.vectorClock != 0:
+                print("Created a commitment transaction.")
+                """
+                Create a commitment tx in all the queues. worker threads create the merkle root of last 10 transactions processed by the this node and send to other nodes.
+                """
+                self.vectorClock = self.vectorClock + 1  # Do commitment tx
+            else:
+                print("DATA is ")
+                # print(data)
+                try:
                     transaction = serialization_pb2.Transaction()
                     transaction.ParseFromString(data)
-                    #print(transaction)
                     print(transaction)
-                    if transaction.txhash in self.txHashlist.keys():
-                        workersQueue[self.txHashlist[transaction.txhash]].put(transaction)
-                    else:
-                        timestamps = transaction.timestamp
-                        timestamps[sorted_nodekeys.index(PUBLIC_KEY.serialize().hex())] = self.vectorClock
-                        txhash = int(transaction.txHash, 16)
-                        workerid = (txhash % (cpucores - 3))
-                        print("Assigned to {}".format(workerid))
-                        self.txHashlist[transaction.txhash] = workerid
-                        workersQueue[workerid].put(transaction)
-                        self.vectorClock = self.vectorClock + 1
-            except Exception as e:
-                print("-- Not transaction data.")
-                print(e)
+                except Exception as e:
+                    print("--Not transaction data ")
+                    print(e)
+                if transaction.txhash in self.txHashlist.keys():
+                    workersQueue[self.txHashlist[transaction.txhash]].put(transaction)
+                else:
+                    timestamps = transaction.timestamp
+                    timestamps[sorted_nodekeys.index(PUBLIC_KEY.serialize().hex())] = self.vectorClock
+                    txhash = int(transaction.txHash, 16)
+                    workerid = (txhash % (cpucores - 3))
+                    print("Assigned to {}".format(workerid))
+                    self.txHashlist[transaction.txhash] = workerid
+                    workersQueue[workerid].put(transaction)
+                    self.vectorClock = self.vectorClock + 1
 
 
 class workerthread(multiprocessing.Process):  # This is where the processing happens
