@@ -157,7 +157,7 @@ class workerthread(multiprocessing.Process):  # This is where the processing hap
                     print(i)
 
     def run(self):
-        while not workersQueue[self.workerID].empty():
+        while workersQueue[self.workerID].qsize()>0:
             self.transaction = workersQueue[self.workerID].get()
             print("-- LOG: {} from worker-{}".format(self.transaction.txHash, self.workerID))
             #self.cursor.execute( """SELECT txHash FROM worker{} ORDER BY vectorClock DESC LIMIT 1;""".format(str(self.workerID)))
