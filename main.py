@@ -103,8 +103,6 @@ class UDPServer(multiprocessing.Process):
                 """
                 self.vectorClock = self.vectorClock + 1  # Do commitment tx
             else:
-                print("DATA is ")
-                # print(data)
                 try:
                     transaction = serialization_pb2.Transaction()
                     transaction.ParseFromString(data)
