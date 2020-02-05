@@ -8,6 +8,6 @@ serversockin.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 @app.route("/gateway",methods=['POST'])
 def pebblegateway():
     serversockin.sendto(request.data,(ip,2020))
-
+    return "gotcha!"
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

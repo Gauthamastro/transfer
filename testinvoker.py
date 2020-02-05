@@ -1,6 +1,6 @@
 import random
 import serialization_pb2
-import requests,utils,boto3
+import utils,requests
 
 # noinspection PyUnresolvedReferences
 from blspy import (PrivateKey, PublicKey, Signature, PrependSignature, AggregationInfo, ExtendedPrivateKey, Threshold,
@@ -17,13 +17,11 @@ if __name__ == '__main__':
     PUBLIC_KEY = PRIVATE_KEY.get_public_key()
     TESTKEY = PrivateKey.from_seed(seed)
     TESTPKEY = PRIVATE_KEY.get_public_key()
-    sqs = boto3.client('sqs',region_name='ap-south-1')
-    queue_url = "https://sqs.ap-south-1.amazonaws.com/876703040586/PebbleMumbaiServer"
-
-    #print("-- Configured for {} at {}".format(serverip, 2020))
+    serverip = input("Enter Gateway Ip:")
+    print("-- Configured for {} at {}".format(serverip, 2020))
     print("-- PUBLIC KEY: {}".format(PUBLIC_KEY.serialize().hex()))
     #print("-- Sending transactions from {} ".format(2021))
-    #API_ENDPOINT="http://{}:5000/newtransaction".format(serverip)
+    API_ENDPOINT="http://{}:5000/gateway".format(serverip)
     #serversockin = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     #serversockin.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     while True:
@@ -48,14 +46,8 @@ if __name__ == '__main__':
             #sock.sendall(tx_bytes)
             print(tx_bytes)
             print(len(tx_bytes))
-            response = sqs.send_message(
-                QueueUrl=queue_url,
-                DelaySeconds=0,
-                MessageAttributes={'Transaction':{'DataType':'Binary','BinaryValue':tx_bytes}},
-                MessageBody=(" Pebble Transactions"))
-            print(response['MessageId'])
-            #r = requests.post(url=API_ENDPOINT, data=tx_bytes)
-            #print(r.text)
+            r = requests.post(url=API_ENDPOINT, data=tx_bytes)
+            print(r.text)
             #serversockin.sendto(tx_bytes, (serverip, 2020))
         if a==2:
             N = int(input("Enter number of transactions to create : "))
@@ -76,14 +68,8 @@ if __name__ == '__main__':
                 tx_bytes = transaction.SerializeToString()
                 print(tx_bytes)
                 print(len(tx_bytes))
-                response = sqs.send_message(
-                    QueueUrl=queue_url,
-                    DelaySeconds=0,
-                    MessageAttributes={'Transaction': {'DataType': 'Binary', 'BinaryValue': tx_bytes}},
-                    MessageBody=(" Pebble Transactions"))
-                print(response['MessageId'])
-                #r = requests.post(url=API_ENDPOINT, data=tx_bytes)
-                #print(r.text)
+                r = requests.post(url=API_ENDPOINT, data=tx_bytes)
+                print(r.text)
                 #sock.sendall(tx_bytes)
                 #serversockin.sendto(tx_bytes, (serverip, 2020))
                 #print("-- Tx Hash {} is sent.".format(transaction.txHash))

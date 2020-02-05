@@ -7,7 +7,6 @@ import mysql.connector
 from blspy import (PrivateKey, PublicKey, Signature, PrependSignature, AggregationInfo, ExtendedPrivateKey, Threshold,
                    Util)
 from requests import get
-import boto3
 import serialization_pb2
 import utils
 import socket
@@ -136,6 +135,7 @@ class workerthread(multiprocessing.Process):  # This is where the processing hap
         self.conn = mysql.connector.connect(host='localhost', user='root', passwd='')
         self.autocommit = True
         self.cursor = self.conn.cursor()
+        print("-- Worker {} started.".format(self.workerID))
         try:
             self.cursor.execute("USE blockchain;")
             self.cursor.execute(
@@ -183,8 +183,5 @@ print("-----Worker Processes deployed...")
 server = UDPServer()
 server.start()
 print("-----UDP Server is running...")
-sqs = boto3.client('sqs',region_name='ap-south-1')
-queue_url = "https://sqs.ap-south-1.amazonaws.com/876703040586/PebbleMumbaiServer"
-
 while True:
     pass
