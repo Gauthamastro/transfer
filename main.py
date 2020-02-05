@@ -104,8 +104,10 @@ class UDPServer(multiprocessing.Process):
                     """
                     self.vectorClock = self.vectorClock + 1  # Do commitment tx
                 else:
+                    print("DATA is ")
+                    print(data)
                     transaction = serialization_pb2.Transaction()
-                    transaction.ParseFromString(data)
+                    transaction.ParseFromString(bytes(data))
                     #print(transaction)
                     print(transaction.txhash)
                     if transaction.txhash in self.txHashlist.keys():
