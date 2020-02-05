@@ -7,7 +7,7 @@ import mysql.connector
 from blspy import (PrivateKey, PublicKey, Signature, PrependSignature, AggregationInfo, ExtendedPrivateKey, Threshold,
                    Util)
 from requests import get
-
+import boto3
 import serialization_pb2
 import utils
 import socket
@@ -196,6 +196,7 @@ while True:
         VisibilityTimeout=0,
         WaitTimeSeconds=0
     )
+    print(response)
     message = response['Messages'][0]
     receipt_handle = message['ReceiptHandle']
 
