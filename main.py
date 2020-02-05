@@ -187,22 +187,4 @@ sqs = boto3.client('sqs',region_name='ap-south-1')
 queue_url = "https://sqs.ap-south-1.amazonaws.com/876703040586/PebbleMumbaiServer"
 
 while True:
-    response = sqs.receive_message(
-        QueueUrl=queue_url,
-        MaxNumberOfMessages=1,
-        MessageAttributeNames=[
-            'All'
-        ],
-        VisibilityTimeout=0,
-        WaitTimeSeconds=0
-    )
-    print(response)
-    message = response['Messages'][0]
-    receipt_handle = message['ReceiptHandle']
-
-    # Delete received message from queue
-    sqs.delete_message(
-        QueueUrl=queue_url,
-        ReceiptHandle=receipt_handle
-    )
-    print('Received and deleted message: %s' % message)
+    pass
