@@ -1,5 +1,5 @@
 import multiprocessing
-import random
+import random,time
 import socket
 # noinspection PyUnresolvedReferences
 import mysql.connector
@@ -183,4 +183,7 @@ server = UDPServer()
 server.start()
 print("-----UDP Server is running...")
 while True:
-    pass
+    print(len(workersQueue))
+    print("Queuelen")
+    print(workersQueue[0].qsize())
+    time.sleep(3)
